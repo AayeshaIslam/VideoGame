@@ -16,14 +16,16 @@ float r=0;
 float x;
 float y;
 
-int clickCount = 0;
+int clickCount = -1;
 void setup() {
   size(800, 800);
   s = new Sword();
   s2 = new Sword();
+  b= new Board(7);
+ 
   frameRate(10);
-  level = loadImage("Level Background.png");
-  robot = loadImage("Circular Rotating Robot.png");
+  level = loadImage("level.png");
+  robot = loadImage("Circular_Rotating_Robot.png");
   background(level);
   
   //file = new SoundFile(this, "Dystopian_Synthwave_Retrowave_-_Lost_City_Royalty_Free_Copyright_Safe_Music.mp3");
@@ -43,7 +45,7 @@ void draw() {
   popMatrix();
   
   translate(width/2, height/2);
-  
+  /*
   if (s.getHit()) {
     s.rotateSword();
   }
@@ -51,7 +53,8 @@ void draw() {
   if (s2.getHit()) {
     s2.rotateSword();
   }
-  
+  */
+  b.arrayrotate();
   
 }
 
@@ -59,12 +62,15 @@ void draw() {
 void mousePressed() {
   clickCount++;
   println("Current click count: " + clickCount);
+  /*
   s.shoot();
   
   if (clickCount == 2) {
     s2.shoot();
   }
-
+*/
+if(clickCount<b.swords.length){
+b.clicker(clickCount);
+}
   //s.shoot();
 }
-//Class circle
