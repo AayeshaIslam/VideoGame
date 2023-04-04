@@ -1,42 +1,39 @@
- import processing.sound.*;
- SoundFile file;
- SoundFile hitsound;
+import processing.sound.*;
+SoundFile file;
+SoundFile hitsound;
+
 PImage robot;
 PImage level;
-PImage menu;
-PGraphics pg;
 Sword s;
+Sword s2;
 Board b;
 float sp=20;
 boolean click=false;
-boolean menubool=true;
 float robotAngle = 0;
 float robotSpeed = 0.1;
 float coor;
 float r=0;
-int soundcount=0;
+float x;
+float y;
+
+int clickCount = 0;
 void setup() {
   size(800, 800);
-  s= new Sword();
+  s = new Sword();
+  s2 = new Sword();
   frameRate(10);
-  level = loadImage("level.png");
-  robot = loadImage("Circular_Rotating_Robot.png");
-  menu = loadImage("Menu Screen.png");
-  pg = createGraphics( 600, 400);
+  level = loadImage("Level Background.png");
+  robot = loadImage("Circular Rotating Robot.png");
   background(level);
-  file = new SoundFile(this, "bgsound.mp3");
-  file.loop();
+  
+  //file = new SoundFile(this, "Dystopian_Synthwave_Retrowave_-_Lost_City_Royalty_Free_Copyright_Safe_Music.mp3");
+  //file.loop();
   hitsound = new SoundFile(this, "Hard_Hit_Sound_Effect.mp3");
- if(s.gethit()==true){
-   print("wassap");
- hitsound.play();
- }
+
   // noLoop();
 }
 void draw() {
- if(menubool==false){
   background(level);
-  // b.Rotate();
   pushMatrix();
   translate(width/2, height/2);
   rotate(robotAngle);
@@ -44,37 +41,30 @@ void draw() {
   image(robot, 0, 0);
   robotAngle += robotSpeed;
   popMatrix();
-  if (click==false && s.gethit()==false) {
-    coor= s.shoot(0);
-    coor=  s.shoot(sp);
-  } else {
+  
+  translate(width/2, height/2);
+  
+  if (s.getHit()) {
+    s.rotateSword();
   }
-  if (coor<=635) {
-    //click=false;
-    s.hit(true);
-    if(soundcount==0){
-    hitsound.play();
-    soundcount++;
-    }
-   // hitsound.stop();
-    //float p=s.shoot(-20);
-    //println(p);
+  
+  if (s2.getHit()) {
+    s2.rotateSword();
   }
-  if (s.gethit()==true) {
-    translate(width/2, height/2);
-    rotate(robotAngle);
-    rectMode(CORNER);
-    rect(130, 130, 30, 70);
-    //r+=robotSpeed;
-  }
-  //angle++;
- }
- else{
- background(menu);
- }
+  
+  
 }
+
+
 void mousePressed() {
-  //click=!click;
-  menubool=false;
+  clickCount++;
+  println("Current click count: " + clickCount);
+  s.shoot();
+  
+  if (clickCount == 2) {
+    s2.shoot();
+  }
+
+  //s.shoot();
 }
 //Class circle
