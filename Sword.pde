@@ -1,39 +1,31 @@
-float speed;
-float Pos;
-boolean hit;
 class Sword {
-Sword() {
- speed = 20;
- Pos = 750;
- hit = false;
-}
-float shoot(float sp){
-//background(255);
-//speed=sp;
-if(sp==0){
-rect(width/2,Pos+speed,30,70);
+  float speed;
+  float pos;
+  boolean hit;
 
-//speed-=20;
+  Sword() {
+    speed = 20;
+    pos = 750;
+    hit = false;
+  }
+  
+  void shoot() {
+    while (pos != 630) {
+      ellipse(width/2, pos, 30, 30);
+      pos -= speed;
+      println("Position: " + pos);
+    }
+    setHit(true);
+  }
 
-}
-else if(sp<0){
-rect(width/2,Pos+speed,30,70);
 
-speed+=20;
+  void setHit(boolean b) {
+    hit=b;
+  }
+  
+  boolean getHit() {
+    return hit;
+  }
 }
-else{
-rect(width/2,Pos+speed,30,70);
 
-speed-=20;
 
-}
-return Pos+speed;
-}
-void hit(boolean b){
-hit=b;
-}
-boolean gethit(){
-
-return hit;
-}
-}
