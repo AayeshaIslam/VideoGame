@@ -13,8 +13,9 @@ class Sword {
 
   void shoot() {
     while (pos >= 200) {
-      noStroke();
-      fill(255);
+      strokeWeight(3);
+      stroke(255, 187, 51);
+      fill(0, 255, 255);
       ellipse(0, pos, 30, 30);
       pos -= speed;
     }
@@ -38,3 +39,4 @@ class Sword {
     popMatrix();
   }
 }
+
