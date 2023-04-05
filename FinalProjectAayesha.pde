@@ -1,73 +1,110 @@
-import processing.sound.*;
-SoundFile file;
-SoundFile hitsound;
 
-PImage robot;
-PImage level;
-PImage menu;
-boolean modeMenu;
-boolean gameStart;
-Board b;
-int clickCount;
+class Board {
+  Sword[] swords;
+  int score;
+  boolean clear;
+  String diff;
+  int lev = 1;
+  float robotAngle = 0;
+  float robotSpeed = 0.1;
+    int remBomb;
+    int scorefinal=0;
+    int scoredis=0;
 
-void setup() {
-  size(800, 800);
-  clickCount = 0;
-  b = new Board(8);
-  frameRate(10);
-  level = loadImage("level.png");
-  robot = loadImage("Circular_Rotating_Robot.png");
-  menu = loadImage("Menu Screen.png");
-  //background(level);
-  modeMenu=true;
-  gameStart=false;
-  //file = new SoundFile(this, "Dystopian_Synthwave_Retrowave_-_Lost_City_Royalty_Free_Copyright_Safe_Music.mp3");
-  //file.loop();
-  hitsound = new SoundFile(this, "Hard_Hit_Sound_Effect.mp3");
-}
-void draw() {
-// println(mouseX,mouseY);
-  if(modeMenu){
-  setbg(menu);
+  Board(int swordCount /*might need parameters for level to display level text*/) {
+    swords = new Sword[swordCount];
+    score = 0;
+    clear = false;
+
+    for (int i=0; i < swordCount; i++)
+      swords[i]=new Sword();
   }
-  else{
-    gameStart=true;
-    setbg(level);
-  translate(width/2, height/2);
 
-  b.displayBoard(robot);
-  
-  //Goes through array and checks if a bomb has not been placed at the current index.
-  b.placeBomb();
-  b.display();
-  if(b.getremainingb()==0){
-  b.clear=true;
-  clickCount=0;
-  b.Reset();
-  //b.IncreaseLev();
+  int getScore() {
+    return score;
   }
-   println("lev",b.lev); 
-  }
-}
 
-void setbg(PImage img){
-background(img);
-}
-void mousePressed() {
-  if(modeMenu){
-    if(mouseX>=248 && mouseX<=550 && mouseY>=360 && mouseY<=430){
-    modeMenu=false;
-    }
-    else if (mouseX>=242 && mouseX<=550 && mouseY>=540 && mouseY<=596){
-    exit();
+  void addScore(boolean b) {
+    if (b)
+      score+=1;
+  }
+
+  void Reset() {
+    //Also need to display score screen
+    //score=0;
+   // scoredis+=scorefinal;
+     b.IncreaseLev();
+    clear = false;
+    int swordCount= int (random(7,15));
+     swords = new Sword[swordCount];
+     for (int i=0; i < swordCount; i++)
+      swords[i]=new Sword();
+   
+  }
+
+  void SetDifficulty(String difficulty) {
+    diff=difficulty;
+  }
+
+  void IncreaseLev() {
+    if (clear) {
+      lev++;
+      //Display level text
     }
   }
-  if(modeMenu==false && gameStart==true){
-  if (clickCount < b.swords.length) {
-    println("Current click count: " + clickCount);
-    b.clicked(clickCount);
+
+  void placeBomb() {
+    for (int i=0; i < swords.length; i++) {
+      if (swords[i].getHit()) {
+        swords[i].rotateSword();
+      }
+    }
+  }
+
+  void displayBoard(PImage img) {
+    background(level);
+    pushMatrix();
+    rotate(robotAngle);
+    imageMode(CENTER);
+    image(img, 0, 0);
+    robotAngle += robotSpeed;
+    popMatrix();
   }
   
-  clickCount++;
+  void clicked(int c) {
+    swords[c].shoot();
+    score++;
+  }
+   void display() {
+     PFont mono;
+      mono = createFont("gamerfont3.otf", 128);
+      textFont(mono);
+    b.remBomb = b.swords.length - clickCount;
+    b.remBomb = Math.max(0, b.remBomb);
+   
+
+    textSize(40);
+    text("Remaining Bombs: ", -380, -360);
+    text("Level ", -100, -260);
+     text("Current Score: ", 60, -360);
+
+    textSize(40);
+    text(remBomb, -60, -360);
+    
+    text(lev, 50, -260);
+    text(score, 340, -360);
+    //score = clickCount;
+   /*
+    if(b.remBomb == 0){
+      score = b.swords.length;
+       scorefinal = score;
+    println(scorefinal);
+    }*/
+   // println(score);
+    
+    
+  }
+  int getremainingb(){
+  return remBomb;
   }
 }
