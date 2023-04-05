@@ -1,5 +1,6 @@
 import processing.sound.*;
 SoundFile file;
+SoundFile hitsound;
 PImage robot;
 PImage level;
 PImage menu;
@@ -10,14 +11,15 @@ int clickCount;
 void setup() {
   size(800, 800);
   clickCount = 0;
-  b = new Board(int (random(5,10)));//changes total number of shots available
+  b = new Board(int (random(5, 10)));//changes total number of shots available
   frameRate(10);
   level = loadImage("Level Background.png");
   robot = loadImage("Circular Rotating Robot.png");
   background(level);
 
-  //file = new SoundFile(this, "Dystopian_Synthwave_Retrowave_-_Lost_City_Royalty_Free_Copyright_Safe_Music.wav");
-//  file.loop();
+  file = new SoundFile(this, "Dystopian_Synthwave_Retrowave_-_Lost_City_Royalty_Free_Copyright_Safe_Music.wav");
+  file.loop();
+  hitsound = new SoundFile(this, "Hard_Hit_Sound_Effect.mp3");
 }
 void draw() {
   background(level);
@@ -25,7 +27,7 @@ void draw() {
   translate(width/2, height/2);
 
   b.displayBoard(robot);
-  
+
   //Goes through array and checks if a bomb has not been placed at the current index.
   b.placeBomb();
   b.display();
@@ -36,7 +38,11 @@ void mousePressed() {
   if (clickCount < b.swords.length) {
     println("Current click count: " + clickCount);
     b.clicked(clickCount);
+
+    if (b.swords[clickCount].getHit()) {
+
+      hitsound.play();
+    }
   }
-  //b.score = 
   clickCount++;
 }
