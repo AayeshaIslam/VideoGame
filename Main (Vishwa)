@@ -8,12 +8,16 @@ PImage menu;
 
 Board b;
 int clickCount;
+int score;
+
+boolean setMainMenu = false;
 
 void setup() {
   size(800, 800);
   clickCount = 0;
-  b = new Board(8);
-  frameRate(10);
+  score = 0;
+  b = new Board(int(random(5, 25))); //Create a new board object of random number of bombs from 5 - 25
+  frameRate(32);
   level = loadImage("Level Background.png");
   robot = loadImage("Circular Rotating Robot.png");
   background(level);
@@ -24,21 +28,34 @@ void setup() {
 }
 void draw() {
   background(level);
-
   translate(width/2, height/2);
 
   b.displayBoard(robot);
-  
+
   //Goes through array and checks if a bomb has not been placed at the current index.
   b.placeBomb();
+  
+  if (setMainMenu) {
+    background(level);
+    exit();
+  }
 }
 
 
 void mousePressed() {
   if (clickCount < b.swords.length) {
-    println("Current click count: " + clickCount);
+    println("Click Count: "  + clickCount);
     b.clicked(clickCount);
+    b.collisionCheck();
+    if (b.clear) {
+      setMainMenu = true;
+    }
+    if (b.swords[clickCount].getHit()) {
+      hitsound.play();
+    }
+    clickCount++;
+    println("Click Count: "  + clickCount);
+    println("Current Score: " + b.getScore());
   }
-  
-  clickCount++;
+  //After every level, clickCount has to be reset to 0
 }
