@@ -1,0 +1,68 @@
+class Sword {
+  float speed;
+  float pos;
+  boolean hit;
+  float circleAngle = 0;
+  float circleSpeed = 0.01;
+  float x = 0;
+  float y = 200;
+
+  Sword() {
+    speed = 20;
+    pos = 350;
+    hit = false;
+  }
+
+  void shoot() { //Might also need shoot sound effect and hit sound effect
+    while (pos >= 200) {
+      strokeWeight(3);
+      stroke(255, 187, 51); //Outline of bomb
+      //fill(0, 255, 255); //Bomb color
+      fill(0);
+      ellipse(0, pos, 30, 30);
+      pos -= speed;
+    }
+    setHit(true);    
+  }
+
+
+  void setHit(boolean b) {
+    hit=b;
+  }
+
+  boolean getHit() {
+    return hit;
+  }
+
+  void rotateSword() {
+    pushMatrix();
+    rotate(circleAngle);
+    
+    circleAngle += circleSpeed;
+    if(circleSpeed==0.1){
+    x += cos(circleAngle);
+    y += sin(circleAngle);
+    ellipse(0, 200, 30, 30);
+    
+  }
+    else if(circleSpeed==0.01){
+    x += sin(circleAngle);
+    y += cos(circleAngle);
+    ellipse(-42, 200, 30, 30);
+    
+    
+  }
+  //ellipse(0, 200, 30, 30);
+    
+    //println("X-coord: " + x + ", Y-Coord: " + y * sin(circleAngle));
+    popMatrix();
+  }
+  
+  float getX() {
+    return x;
+  }
+  
+  float getY() {
+    return y;
+  }
+}
