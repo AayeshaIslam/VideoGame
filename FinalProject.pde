@@ -71,7 +71,7 @@ void draw() {
   b.EndScreen();
   }
    
-  else if(easyMode) {
+  else {
     gameStart = true;
 
     setBackground(waveBackground);
