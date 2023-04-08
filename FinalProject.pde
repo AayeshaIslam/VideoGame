@@ -148,7 +148,10 @@ void menuOptions() {
   if (helpBool==true && mouseX>=240 && mouseX<=524 && mouseY>=678 && mouseY<=735) {
     helpBool=false;
   }
-
+  if (modesBool==true && mouseX>=271 && mouseX<=556 && mouseY>=474 && mouseY<=521) {
+    modesBool=false;
+    helpBool=false;
+  }
   if (modesBool==true && easyMode==true) {
     modeMenu=false;
   }
