@@ -7,31 +7,33 @@ class Bomb {
   float x = 0;
   float y = 200;
 
+/*Constructor takes in rotation speed as a parameter*/
   Bomb(float tempCircleSpeed) {
     shootSpeed = 20;
     pos = 350;
     hit = false;
-    circleSpeed = (tempCircleSpeed)/2.0; //somehow worked lol
+    circleSpeed = (tempCircleSpeed)/2.0; 
   }
-
-  void shoot() { //Might also need shoot sound effect
+/*Draws and Controls movement of each bomb from when it is first shor until 
+it reaches the board and sets the corresponding booleans*/
+  void shoot() { 
     while (pos >= 200) {
       strokeWeight(3);
       stroke(255, 187, 51); //Outline of bomb
-      //fill(0, 255, 255); //Bomb color
-      fill(0);
+      
+      fill(158, 9, 146);
       ellipse(0, pos, 30, 30);
       pos -= shootSpeed;
     }
     setHit(true);
   }
-
+/*Rotates the bombs with the board by Rotating coordinates to coordinates with respect to the entire screen*/
   void rotateBomb() {
     pushMatrix();
     translate(width/2, height/2);
     rotate(circleAngle);
     popMatrix();
-
+  //200 is the robot radius
     float tempX = 200 * cos(circleAngle);
     float tempY = 200 * sin(circleAngle);
 
@@ -44,7 +46,7 @@ class Bomb {
     ellipse(x, y, 30, 30);
     circleAngle += circleSpeed;
   }
-
+/*Setter and getter for the hit boolean of each bomb*/
   void setHit(boolean b) {
     hit=b;
   }
