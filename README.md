@@ -1,4 +1,4 @@
-# VideoGame
+# AVA: Angry Virtual Avatar
 CAP3032 Video Game Group Project
 Project Demo Link: https://www.youtube.com/watch?v=lEFn10HNA3g
 
