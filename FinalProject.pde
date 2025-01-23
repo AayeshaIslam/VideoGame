@@ -1,3 +1,8 @@
+/*
+AVA Main File.
+*/
+
+
 //Sound files
 import processing.sound.*;
 SoundFile file;
@@ -15,8 +20,8 @@ PImage menuScreen;
 PImage waveBackground;
 PImage helpScreen;
 PImage modesScreen;
-PImage hardEndScreen;
 PImage easyEndScreen;
+PImage hardEndScreen;
 PImage[] waves = new PImage[6];
 PImage waveBackdrop1;
 PImage waveBackdrop2;
@@ -25,15 +30,15 @@ PImage waveBackdrop4;
 PImage waveBackdrop5;
 PImage waveBackdrop6;
 
+PImage muteSound;
+PImage playSound;
+
 //Board-related items
 Modes easy = new Modes("easy");
 Modes hard = new Modes("hard");
 //Board b;
 int clickCount;
 int score;
-
-int easyHighScore;
-int hardHighScore;
 
 //Background booleans
 boolean modeMenu;
@@ -44,62 +49,23 @@ boolean easyMode;
 boolean hardMode;
 boolean gameEnd;
 
+
 //Miscellaneous
 int index;
 boolean firstDisplayed = false;
+boolean sound;
+boolean drawSound = true;
+boolean drawMuteSound = true;
 
 void setup() {
   size(800, 800);
   frameRate(32);
-
-  volume = new Sound(this);
-  volume.volume(0.05);
-  file = new SoundFile(this, "AVA Background Music.wav");
-  file.loop();
-  hitsound = new SoundFile(this, "Hard Hit Sound.mp3");
-  mouseClick = new SoundFile(this, "Click Sound.wav");
-  robotSound = new SoundFile(this, "Robot Sound.wav");
-  laserSound = new SoundFile(this, "Laser Sound.wav");
-  explosionSound = new SoundFile(this, "Explosion Sound.wav");
-
-  //b = new Board(int(random(7, 15))); //Create a new board object of random number of bombs from 5 - 25
-  clickCount = 0;
-  score = 0;
-
-  easyRobot = loadImage("Easy Robot.png");
-  hardRobot = loadImage("Hard Robot.png");
-  menuScreen = loadImage("Menu Screen.png");
-  helpScreen = loadImage("Help Screen.png");
-  modesScreen = loadImage("Gamemodes Screen.png");
-  easyEndScreen = loadImage("Easy End Screen.png");
-  hardEndScreen = loadImage("Hard End Screen.png");
-  waveBackdrop1 = loadImage("Level Backdrop 1.png");
-  waveBackdrop2 = loadImage("Level Backdrop 2.png");
-  waveBackdrop3 = loadImage("Level Backdrop 3.png");
-  waveBackdrop4 = loadImage("Level Backdrop 4.png");
-  waveBackdrop4 = loadImage("Level Backdrop 5.png");
-  waveBackdrop5 = loadImage("Level Backdrop 6.png");
-  
-  waves[0] = waveBackdrop1;
-  waves[1] = waveBackdrop2;
-  waves[2] = waveBackdrop3;
-  waves[3] = waveBackdrop4;
-  waves[4] = waveBackdrop5;
-  waves[5] = waveBackdrop6;
- 
- 
-  modeMenu = true;
-  gameStart = false;
-  gameModes = false;
-  help = false;
-  easyMode = false;
-  hardMode = false;
-  
-  index = (int) random(0, 5);
+  setupSettings();
 }
 void draw() {
   if (modeMenu) {
     setBackground(menuScreen);
+    soundCheck();
   } 
   else if (help) {
     setBackground(helpScreen);
@@ -121,8 +87,9 @@ void draw() {
   }
 }
 
-/*This functions deals with user interaction, and calls the respective 
-Modes objects and its functions depending on whether the user selects easy or hard node.
+/*
+This function deals with user interaction and calls respective Mode objects 
+(easy or hard). 
 */
 void mousePressed() {
   //If the game has started, keep track of click count and number of bombs
@@ -146,12 +113,12 @@ void mousePressed() {
   }
 }
 
+//Helper function set image to background.
 void setBackground(PImage img) {
   background(img);
 }
 
-/*This function controls the menu functionality with the use of booleans. The specific coordinates of buttons trigger
-the changing the state of the respective booleans which will then trigger functionality such as background change, game reset, etc*/
+//This function is used to display menu options (menu and game modes)
 void options() {
   if (modeMenu) {
     //START BUTTON -> Goes to modes
@@ -172,6 +139,22 @@ void options() {
       mouseClick.play();
       exit();
     }
+    //SOUND OPTION
+    else if (mouseX >= 700 && mouseX <= 800&& mouseY >= 0 && mouseY <= 100) {
+      println("tesitng203");
+      if (sound == false) {
+        file.pause();
+        print(sound);
+        drawSound = false;
+        drawMuteSound =false;
+      }
+      if (sound == true) {
+        file.loop();
+        drawSound = true;
+        drawMuteSound = true;
+      }
+      sound = !sound;
+    }
   } 
   else if (gameModes) {
     //EASY BUTTON
@@ -183,7 +166,7 @@ void options() {
       hardMode = false;
     }
     //HARD BUTTON
-    else if (mouseX <=780 && mouseX >=416 && mouseY >=365 && mouseY <=431) {
+    else if (mouseX <=780 && mouseX >=416 && mouseY >=365 &&mouseY <=431) {
       mouseClick.play();
       modeMenu = false;
       gameModes = false;
@@ -205,4 +188,82 @@ void options() {
       modeMenu = true;
     }
   }
+}
+
+
+//This function is used to display the sound image and have play/mute functionality.
+void soundCheck() {
+  if (!gameEnd) {
+    //Play Sound
+      if (drawSound) {
+        image(playSound, 700, 0);
+      }
+      //Mute Sound
+      if (!drawMuteSound) {
+        image(muteSound, 700, 0);
+      }
+  }
+  if (gameEnd) {
+    //Play Sound
+    if (drawSound) {
+      image(playSound, 750, 50);
+    }
+    //Mute Sound
+    if (!drawMuteSound) {
+      image(muteSound, 750, 50);
+    }
+  }
+}
+
+/*
+This function is called in the setup() function.
+It is used to load images and sound files, as well as set boolean values.
+*/
+void setupSettings() {
+  volume = new Sound(this);
+  volume.volume(0.05);
+  file = new SoundFile(this, "AVA Background Music.wav");
+  file.loop();
+  hitsound = new SoundFile(this, "Hard Hit Sound.mp3");
+  mouseClick = new SoundFile(this, "Click Sound.wav");
+  robotSound = new SoundFile(this, "Robot Sound.wav");
+  laserSound = new SoundFile(this, "Laser Sound.wav");
+  explosionSound = new SoundFile(this, "Explosion Sound.wav");
+
+  clickCount = 0;
+  score = 0;
+
+  easyRobot = loadImage("Easy Robot.png");
+  hardRobot = loadImage("Hard Robot.png");
+  menuScreen = loadImage("Menu Screen.png");
+  helpScreen = loadImage("Help Screen.png");
+  modesScreen = loadImage("Gamemodes Screen.png");
+  easyEndScreen = loadImage("Easy End Screen.png");
+  hardEndScreen = loadImage("Hard End Screen.png");
+  
+  waveBackdrop1 = loadImage("Level Backdrop 1.png");
+  waveBackdrop2 = loadImage("Level Backdrop 2.png");
+  waveBackdrop3 = loadImage("Level Backdrop 3.png");
+  waveBackdrop4 = loadImage("Level Backdrop 4.png");
+  waveBackdrop4 = loadImage("Level Backdrop 5.png");
+  waveBackdrop5 = loadImage("Level Backdrop 6.png");
+  
+  waves[0] = waveBackdrop1;
+  waves[1] = waveBackdrop2;
+  waves[2] = waveBackdrop3;
+  waves[3] = waveBackdrop4;
+  waves[4] = waveBackdrop5;
+  waves[5] = waveBackdrop6;
+  
+  muteSound = loadImage("Mute Sound.png"); 
+  playSound = loadImage("Play Sound.png");
+ 
+  modeMenu = true;
+  gameStart = false;
+  gameModes = false;
+  help = false;
+  easyMode = false;
+  hardMode = false;
+  
+  index = (int) random(0, 5); //Used to randomly display image background for wave.
 }
