@@ -6,9 +6,13 @@ class Modes {
   boolean hard;
   boolean restart;
   boolean explosionPlayed = false;
-/*Constructor takes in the mode as a parameter. 
-Based on that, it sets the easy or hard booleans for the board and makes a new board object with a randomized number of bombs and robot speed,
-if the mode is hard, the number of bombs and robot speed is significantly higher.*/
+
+/*
+Constructor takes in the mode as a parameter. 
+Based on that, it sets the easy or hard booleans for the board and makes a new board 
+object with a randomized number of bombs and robot speed, if the mode is hard, 
+the number of bombs and robot speed is significantly higher.
+*/
   Modes(String mode) {
     if (mode == "easy") {
       easy = true;
@@ -21,11 +25,14 @@ if the mode is hard, the number of bombs and robot speed is significantly higher
       b = new Board((int(random(10, 30))), random(0.076, 0.1));
     }
   }
-/*This function is called when the game starts. It displays the board along with rotation, places the bombs that have been shot, 
-checks whether the game is in a win or lose state, and continues or restarts the game based on those booleans*/
+
+/*
+This function is called when the game starts. It displays the board along 
+with rotation, places the bombs that have been shot, checks whether the game 
+is in a win or lose state, and continues or restarts the game based on those booleans.
+*/
   void runningGame(PImage robot) {
     b.displayBoard(robot);
-    println("Robot Speed: " + b.robotSpeed);
 
     b.placeBomb(); //Goes through array and checks if a bomb has not been placed at the current index.
     if (b.remainingBombs == 0 && easy) {
@@ -43,12 +50,10 @@ checks whether the game is in a win or lose state, and continues or restarts the
       
       explosionPlayed = true;
       gameEnd = true;
-      if (easy){
-      b.displayEndScreen(easyEndScreen);
-      }
-      else if (hard){
-      b.displayEndScreen(hardEndScreen);
-      }
+      if (easy)
+        b.displayEndScreen(easyEndScreen);
+      else if (hard)
+        b.displayEndScreen(hardEndScreen);
       gameStart = false;
 
       if (restart) {
@@ -62,10 +67,14 @@ checks whether the game is in a win or lose state, and continues or restarts the
       }
     }  
   }
-/*Increments clickcount while there are bombs left, checks for collisions, and calls clicked which has shooting and user interaction functionality*/
+
+/*
+Increments clickcount while there are bombs left, 
+checks for collisions, and calls clicked which has shooting 
+and user interaction functionality. */
   void clickCountCheck() {
     if (clickCount < b.bombs.length) {
-      b.clicked(clickCount, hitsound);
+      b.clicked(clickCount);
       b.collisionCheck();
       clickCount++;
     }
