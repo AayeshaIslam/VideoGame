@@ -1,6 +1,5 @@
 class Board {
   Bomb[] bombs;
-  //int score;
   boolean clear;
   String difficulty;
   
@@ -13,13 +12,17 @@ class Board {
   int remainingBombs;
   int wave = 1;
   float robotAngle = PI/4;
+  int negateSpeed;
 
   boolean lose = false;
   boolean mute = false;
 
   //Constructor
-  /*Constructor parameters accept randomly generated values for number of bombs and robot speed,
-  and uses those values to make a new array of bombs and set their speed */
+  /* 
+  Constructor parameters accept randomly generated values for number of 
+  bombs and robot speed, and uses those values to make a new array of bombs 
+  and set their speed. 
+  */
   Board(int _bombCount, float _robotSpeed) {
     bombCount = _bombCount;
     robotSpeed = _robotSpeed;
@@ -32,8 +35,11 @@ class Board {
   }
 
   //Displays board
-  /*This function takes in the board image as a parameter and rotates it according to the robot speed,
-  it also calculates the stats of the game and calls the function which displays them*/
+  /* 
+  This function takes in the board image as a parameter and rotates it 
+  according to the robot speed. It also calculates the stats of the game and 
+  calls the function which displays them. 
+  */
   void displayBoard(PImage img) {
     PFont f = createFont("Architype Font.otf", 128);
     textFont(f);
@@ -55,10 +61,12 @@ class Board {
   }
 
   //Bomb Placement
-  /*This function controls the color of the bombs, and determines which bombs have hit the board and thus need to be rotated*/
+  /*
+  This function controls the color of the bombs, and 
+  determines which bombs have hit the board and thus need to be rotated.
+  */
   void placeBomb() {
     fill(158, 9, 146);
-    
     for (int i=0; i < bombs.length; i++) {
       if (bombs[i].getHit())
         bombs[i].rotateBomb();
@@ -67,8 +75,10 @@ class Board {
   }
 
   //Reset board for next level
-  /*This is a reset function for each wave, it determines a new robot speed,
-  a new background, makes a new array of bombs, and increments the wave*/
+  /* 
+  This is a reset function for each wave, it determines a new robot speed,
+  a new background, makes a new array of bombs, and increments the wave. 
+  */
   void ResetNextLevel() {
     clear = true;
     clickCount = 0;
@@ -77,20 +87,27 @@ class Board {
     if (easyMode) {
       robotSpeed = random(0.025, 0.075);
     } else if (hardMode) {
-      robotSpeed = random(-0.076, 0.1);
+      negateSpeed = int (random(0, 1));
+      if (negateSpeed == 0) {
+        robotSpeed = random(0.076, 0.1);
+      }
+      else if (negateSpeed == 1) {
+        robotSpeed = random(-0.1, -0.076);
+      }
     }
 
     index = (int) random(0, 5);
     background(waves[index]);
-    //robotSpeed = random(0.025, 0.075);
-    println("Robot Speed: " + robotSpeed);
     int bombCount = int (random(7, 15));
     bombs = new Bomb[bombCount];
     for (int i=0; i < bombCount; i++)
       bombs[i]=new Bomb(robotSpeed);
   }
-/*This is the reset function for the whole game, and is called if the game is lost. 
-It resets the stats, makes a new robot speed, and a new array of bombs*/
+
+/* 
+This is the reset function for the whole game, and is called if the game is lost. 
+It resets the stats, makes a new robot speed, and a new array of bombs. 
+*/
   void ResetAfterLose() {
     lose=false;
     score=0;
@@ -102,42 +119,55 @@ It resets the stats, makes a new robot speed, and a new array of bombs*/
       robotSpeed = random(0.025, 0.075);
     } else if (hardMode) {
       bombCount = int (random(10, 30));
-      robotSpeed = random(-0.076, 0.1);
+      
+      negateSpeed = int (random(0, 1));
+      if (negateSpeed == 0) {
+        robotSpeed = random(0.076, 0.1);
+      }
+      else if (negateSpeed == 1) {
+        robotSpeed = random(-0.1, -0.076);
+      }
     }
     bombs = new Bomb[bombCount];
     for (int i=0; i < bombCount; i++)
       bombs[i]=new Bomb(robotSpeed);
   }
 
-/*The score is incremented within this function, along with the clicking sound.
-Additionally, the shoot function is called here, which controls the movement of the bomb until it reaches the board*/
-  void clicked(int c, SoundFile hit) {
+/* 
+The score is incremented within this function, along with the clicking sound.
+Additionally, the shoot function is called here, which controls the 
+movement of the bomb until it reaches the board. 
+*/
+  void clicked(int c) {
     bombs[c].shoot();
     if (!mute)
-      hit.play();
+      hitsound.play();
     if (!lose)
       if (easyMode)
         score+=1;
-      else if (hardMode)
-        score+=2;
+       else if (hardMode)
+         score+=2;
   }
 
-  /*Lose condition*/
-  /*Check if a collision occured between two bombs by taking into account the distance between them. 
-  If the distance is less than 36 (radius+stroke of two circles), the lose condition is set to true*/
+  //Lose condition
+/* 
+Check if a collision occured between two bombs by taking into account 
+the distance between them. If the distance is less than 36 
+(radius+stroke of two circles), the lose condition is set to true.
+*/
   void collisionCheck() {
     for (int i = 0; i < bombs.length; i++) {
       if (bombs[clickCount].getHit() && bombs[i].getHit() && (i != clickCount)) {
         if (dist(bombs[i].x, bombs[i].y, bombs[clickCount].x, bombs[clickCount].y) <= 36) {
-          println("COLLIDED!");
           lose = true;
           clear = true;
         }
       }
     }
   }
-/*Formatting the text for the stats, such as coordinates and text size*/
-  void boardText(int x1, int x2, int x3, int x4, int x5, int x6/*, int x7, int x8*/) {
+
+//Formatting the text for the stats, such as coordinates and text size.
+  void boardText(int x1, int x2, int x3, int x4, int x5, int x6) {
     textSize(25);
     text("REMAINING BOMBS: ", x1, -360);
     text(" " + remainingBombs, x2, -360);
@@ -145,11 +175,15 @@ Additionally, the shoot function is called here, which controls the movement of 
     text(" " + score, x4, -360);
 
     textSize(40);
-    text("WAVE ", x5, -260); //Change to x7
-    text(wave, x6, -260); //Change to x8
+    text("WAVE ", x5, -260);
+    text(wave, x6, -260);
   }
-/*This function takes in an image as a parameter to set the image for the endscreen.
-The highscore is calculated, and formatting is done to show the text for the stats such as text size, and coordinates*/
+  
+/* 
+This function takes in an image as a parameter to set the image for the endscreen.
+The highscore is calculated, and formatting is done to 
+show the text for the stats such as text size, and coordinates. 
+*/
   void displayEndScreen(PImage p) {
     background(p);
     finalScore = score;
